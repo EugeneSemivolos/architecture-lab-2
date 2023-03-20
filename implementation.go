@@ -21,6 +21,7 @@ func CalculatePrefix(input string) (int, error) {
 
 	for i := len(input) - 1; i >= 0; i-- {
 		clearSpaces(input, &i)
+
 		if unicode.IsDigit(rune(input[i])) {
 			num, i, err = getNumber(input, i)
 			if err != nil {
@@ -28,12 +29,14 @@ func CalculatePrefix(input string) (int, error) {
 			}
 			stack.Push(num)
 		} else {
-			o1, _ := stack.Pop()
-			o2, _ := stack.Pop()
-
+			if len(stack) < 2 {
+				return -1, fmt.Errorf("Error. Missing arguments or many operators")
+			}
 			if !strings.Contains(operators, string(input[i])) {
 				return -1, fmt.Errorf("Error. Problem with opertator")
 			}
+			o1, _ := stack.Pop()
+			o2, _ := stack.Pop()
 			switch input[i] {
 			case '+':
 				stack.Push(o1 + o2)
@@ -51,6 +54,9 @@ func CalculatePrefix(input string) (int, error) {
 			}
 		}
 	}
+	if stack.Length() != 1 {
+		return -1, fmt.Errorf("Error. Missing arguments or many operators")
+	}
 	res, _ := stack.Pop()
 	return res, nil
 }
@@ -65,8 +71,12 @@ func getNumber(data string, i int) (int, int, error) {
 	j := i
 	for unicode.IsDigit(rune(data[j])) {
 		j--
+		if j == -1 {
+			break
+		}
 	}
-	result, err := strconv.Atoi(data[j+1 : i+1])
+	j++
+	result, err := strconv.Atoi(data[j : i+1])
 	if err != nil {
 		return -1, -1, fmt.Errorf("Error. NaN")
 	}

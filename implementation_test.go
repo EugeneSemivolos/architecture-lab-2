@@ -69,6 +69,18 @@ var Tests = []Test{
 		wanted:     -1,
 		err:        fmt.Errorf("Error. Divide by zero"),
 	},
+	{
+		name:       "Just arguments",
+		expression: "1 2 3",
+		wanted:     -1,
+		err:        fmt.Errorf("Error. Missing arguments or many operators"),
+	},
+	{
+		name:       "Too many operators",
+		expression: "+ ^ 2 3",
+		wanted:     -1,
+		err:        fmt.Errorf("Error. Missing arguments or many operators"),
+	},
 }
 
 func TestCalculatePrefix(t *testing.T) {
