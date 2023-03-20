@@ -29,11 +29,11 @@ func CalculatePrefix(input string) (int, error) {
 			}
 			stack.Push(num)
 		} else {
-			if len(stack) < 2 {
-				return -1, fmt.Errorf("Error. Missing arguments or many operators")
-			}
 			if !strings.Contains(operators, string(input[i])) {
 				return -1, fmt.Errorf("Error. Problem with opertator")
+			}
+			if len(stack) < 2 {
+				return -1, fmt.Errorf("Error. Missing arguments or many operators")
 			}
 			o1, _ := stack.Pop()
 			o2, _ := stack.Pop()
