@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"io"
 	"strconv"
-	"strings"
 )
 
 type ComputeHandler struct {
@@ -13,16 +12,15 @@ type ComputeHandler struct {
 }
 
 func (ch *ComputeHandler) Compute() error {
-	bufRead := make([]byte, 128)
-	_, err := ch.Input.Read(bufRead)
+	bufRead := new(bytes.Buffer)
+	_, err := io.Copy(bufRead, ch.Input)
 	if err != nil {
 		return err
 	}
-	bufRead = bytes.Trim(bufRead, "\x00")
 
-	expression := string(bufRead)
-	trimmed := strings.Trim(expression, " \n")
-	res, err := CalculatePrefix(trimmed)
+	input := bufRead.String()
+
+	res, err := CalculatePrefix(input)
 	if err != nil {
 		return err
 	}
